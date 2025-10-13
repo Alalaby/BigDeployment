@@ -4,138 +4,216 @@
   <meta charset="UTF-8" />
   <title>🚀 THE BIG TECH DEPLOY — MISSION CONTROL</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-</head>
-<body style="margin:0; background:#000; color:#fff; font-family:monospace; overflow-x:hidden;">
+  <style>
+    :root{
+      --accent:#ff9800; --danger:#ff1744; --ok:#00e676; --ink:#000; --panel:#111; --line:#333;
+    }
+    html,body{height:100%;margin:0;background:#000;color:#fff;font-family:monospace;overflow-x:hidden;}
 
-  <header style="text-align:center; padding:26px 10px; border-bottom:2px solid #222;">
-    <h1 style="margin:0 0 8px; color:#ff5555;">🔥 TECH RELEASE: MISSION CONTROL 🔥</h1>
-    <div style="opacity:.9;">Status: <span id="statusText" style="color:#0f0;">IDLE</span></div>
+    header{ text-align:center; padding:26px 10px; border-bottom:2px solid #222;}
+    header h1{ margin:0 0 8px; color:#ff5555; letter-spacing:.5px;}
+    header .status{ opacity:.9 }
+    #statusText{ color:#0f0; }
+
+    main{ max-width:980px; margin:0 auto; padding:18px;}
+
+    /* Controls */
+    #controls{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:10px;}
+    #launchBtn{
+      font-size:28px;padding:20px 44px;color:#fff;border:none;border-radius:14px;cursor:pointer;
+      background:linear-gradient(90deg,#f44336,#ff9800);
+      box-shadow:0 0 20px #ff5722; animation:pulse 1.5s infinite;
+    }
+    #abortBtn{
+      display:none;font-size:22px;padding:16px 28px;background:#d32f2f;color:#fff;border:2px solid var(--danger);
+      border-radius:12px;cursor:pointer;box-shadow:0 0 10px #b71c1c;
+    }
+    #resetBtn{
+      display:none;font-size:18px;padding:12px 22px;background:#222;color:#fff;border:1px solid #555;border-radius:10px;cursor:pointer;
+    }
+
+    /* Countdown */
+    #countdownWrap{ text-align:center; margin:24px 0 8px;}
+    #countdown{ font-size:76px; letter-spacing:4px; animation:glow 1s infinite;}
+    #countdownLabel{ height:24px; color:var(--accent); }
+
+    /* Console */
+    #console{
+      background:#000;color:#00e676;padding:20px;margin-top:14px;height:320px;overflow-y:auto;text-align:left;border:2px solid var(--line);
+      border-radius:10px;
+    }
+
+    /* Progress */
+    #progressWrap{ margin-top:16px; display:none;}
+    #progressShell{ background:#111; border:1px solid #333; border-radius:8px; overflow:hidden;}
+    #progressBar{ height:14px; width:0%; background:linear-gradient(90deg,#00e676,#00b0ff);}
+
+    #finale{ text-align:center; margin:26px 0 10px;}
+
+    /* Overlays / effects */
+    #strobe{ display:none; position:fixed; inset:0; pointer-events:none; background:rgba(255,0,0,0.18);
+      mix-blend-mode:screen; animation:strobe 1s infinite; }
+    .shake { animation: shakeAnim .4s ease-in-out 6; }
+
+    /* ANIMATIONS */
+    @keyframes flash{0%{opacity:1}50%{opacity:.1}100%{opacity:1}}
+    @keyframes pulse{0%{box-shadow:0 0 10px #ff5722}50%{box-shadow:0 0 30px #ff9800}100%{box-shadow:0 0 10px #ff5722}}
+    @keyframes glow{0%{text-shadow:0 0 8px var(--accent); color:#fff}50%{text-shadow:0 0 24px var(--accent); color:#ffe082}100%{text-shadow:0 0 8px var(--accent); color:#fff}}
+    @keyframes strobe{0%{background:rgba(255,0,0,.06)}50%{background:rgba(255,0,0,.26)}100%{background:rgba(255,0,0,.06)}}
+    @keyframes shakeAnim{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+
+    /* Console ROLL-UP (cinematic shutter) */
+    #console.rollup{ overflow:hidden; border-color:#222; animation:rollUp .9s ease forwards;}
+    @keyframes rollUp{
+      0%{height:320px;opacity:1;filter:blur(0)}
+      35%{transform:scaleY(.98);filter:blur(1px)}
+      70%{transform:scaleY(.92);filter:blur(2px);opacity:.6}
+      100%{height:0;padding-top:0;padding-bottom:0;border-width:0;opacity:0;filter:blur(3px)}
+    }
+
+    /* Finale hero entrance */
+    .finale-hero{ text-align:center; animation:popIn 600ms cubic-bezier(.2,.8,.2,1) forwards; opacity:0; transform:translateY(10px) scale(.98); }
+    @keyframes popIn{ to{ opacity:1; transform:translateY(0) scale(1) } }
+    .online-badge{ color:gold; font-size:48px; margin:10px 0; animation:flash 1s infinite; }
+    .subtitle{ font-size:20px; margin:6px 0 20px; color:#ddd; }
+    .cat{ border-radius:12px; box-shadow:0 8px 40px rgba(255,215,0,.08); }
+
+    /* Countdown blast-out when it hits zero */
+    .blast{ animation:blastOut 600ms cubic-bezier(.2,.8,.2,1) forwards; }
+    @keyframes blastOut{
+      0%{ transform:scale(1); opacity:1 }
+      60%{ transform:scale(1.6); opacity:.6 }
+      100%{ transform:scale(.6) translateY(-20px); opacity:0 }
+    }
+
+    /* Reset confetti toast */
+    .toast {
+      position: fixed; top: 14px; right: 14px;
+      background:#111; color:#fff;
+      border:1px solid #333; border-radius:10px;
+      padding:10px 14px; font-size:13px;
+      box-shadow:0 8px 30px rgba(0,0,0,.4);
+      opacity:0; transform: translateY(-8px);
+      animation: toastIn .45s ease-out forwards, toastOut .6s ease-in 2.2s forwards;
+    }
+    @keyframes toastIn { to { opacity:1; transform: translateY(0); } }
+    @keyframes toastOut { to { opacity:0; transform: translateY(-8px); } }
+
+    /* Tiny helper link */
+    .footlink a{ color:#8ab4f8; text-decoration:none; border-bottom:1px dashed #8ab4f8 }
+    .footlink a:hover{ opacity:.8 }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🔥 TECH RELEASE: MISSION CONTROL 🔥</h1>
+    <div class="status">Status: <span id="statusText">IDLE</span></div>
   </header>
 
-  <main style="max-width:980px; margin:0 auto; padding:18px;">
-    <!-- Control Row -->
-    <div id="controls" style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:10px;">
-      <button id="launchBtn" onclick="initiateLaunch()" style="font-size:28px;padding:20px 44px;background:linear-gradient(90deg,#f44336,#ff9800);color:#fff;border:none;border-radius:14px;cursor:pointer;box-shadow:0 0 20px #ff5722;animation:pulse 1.5s infinite;">LAUNCH DEPLOYMENT</button>
-      <button id="abortBtn" onclick="abortLaunch()" style="display:none;font-size:22px;padding:16px 28px;background:#d32f2f;color:#fff;border:2px solid #ff1744;border-radius:12px;cursor:pointer;box-shadow:0 0 10px #b71c1c;">ABORT MISSION</button>
-      <button id="resetBtn" onclick="resetMission()" style="display:none;font-size:18px;padding:12px 22px;background:#222;color:#fff;border:1px solid #555;border-radius:10px;cursor:pointer;">RESET</button>
+  <main>
+    <!-- Controls -->
+    <div id="controls">
+      <button id="launchBtn" onclick="initiateLaunch()">LAUNCH DEPLOYMENT</button>
+      <button id="abortBtn" onclick="abortLaunch()">ABORT MISSION</button>
+      <button id="resetBtn" onclick="resetMission()">RESET</button>
     </div>
 
     <!-- Countdown -->
-    <div id="countdownWrap" style="text-align:center; margin:24px 0 8px;">
-      <div id="countdown" style="font-size:76px; letter-spacing:4px;"></div>
-      <div id="countdownLabel" style="height:24px; color:#ff9800;"></div>
+    <div id="countdownWrap">
+      <div id="countdown"></div>
+      <div id="countdownLabel"></div>
     </div>
 
     <!-- Console -->
-    <div id="console" style="background:#000;color:#00e676;padding:20px;margin-top:14px;height:320px;overflow-y:auto;text-align:left;border:2px solid #333;border-radius:10px;"></div>
+    <div id="console"></div>
 
     <!-- Progress -->
-    <div id="progressWrap" style="margin-top:16px; display:none;">
+    <div id="progressWrap">
       <div style="font-size:12px; opacity:.8; margin-bottom:6px;">Deployment Progress</div>
-      <div style="background:#111; border:1px solid #333; border-radius:8px; overflow:hidden;">
-        <div id="progressBar" style="height:14px; width:0%; background:linear-gradient(90deg,#00e676,#00b0ff);"></div>
-      </div>
+      <div id="progressShell"><div id="progressBar"></div></div>
     </div>
 
     <!-- Finale -->
-    <div id="finale" style="text-align:center; margin:26px 0 10px;"></div>
+    <div id="finale"></div>
+
+    <div class="footlink" style="text-align:center; opacity:.6; font-size:12px; margin-top:10px;">
+      <!-- Optional: link back to your classic button -->
+      <!-- <a href="https://alalaby.github.io/Button/">Back to Classic Deploy</a> -->
+    </div>
   </main>
 
-  <!-- Warning strobe overlay (used on abort) -->
-  <div id="strobe" style="display:none; position:fixed; inset:0; pointer-events:none; background:rgba(255,0,0,0.18); mix-blend-mode:screen; animation:strobe 1s infinite;"></div>
+  <!-- Aborted overlay -->
+  <div id="strobe"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script>
-    // ----- STATE -----
-    let countdownTimer = null;
-    let logTimer = null;
-    let partyTimerActive = false;
-    let currentPhase = "IDLE"; // IDLE | COUNTDOWN | DEPLOYING | SUCCESS | ABORTED
+    // ===== STATE =====
+    let countdownTimer=null, logTimer=null, partyTimerActive=false;
+    let currentPhase="IDLE"; // IDLE | COUNTDOWN | DEPLOYING | SUCCESS | ABORTED
 
-    const statusText = document.getElementById("statusText");
-    const countdownEl = document.getElementById("countdown");
-    const countdownLabel = document.getElementById("countdownLabel");
-    const consoleEl = document.getElementById("console");
-    const progressWrap = document.getElementById("progressWrap");
-    const progressBar = document.getElementById("progressBar");
-    const finaleEl = document.getElementById("finale");
-    const launchBtn = document.getElementById("launchBtn");
-    const abortBtn = document.getElementById("abortBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const strobe = document.getElementById("strobe");
+    const statusText=document.getElementById("statusText");
+    const countdownEl=document.getElementById("countdown");
+    const countdownLabel=document.getElementById("countdownLabel");
+    const consoleEl=document.getElementById("console");
+    const progressWrap=document.getElementById("progressWrap");
+    const progressBar=document.getElementById("progressBar");
+    const finaleEl=document.getElementById("finale");
+    const launchBtn=document.getElementById("launchBtn");
+    const abortBtn=document.getElementById("abortBtn");
+    const resetBtn=document.getElementById("resetBtn");
+    const strobe=document.getElementById("strobe");
 
-    // ----- UTIL -----
-    function setStatus(t, color) {
-      statusText.textContent = t;
-      statusText.style.color = color || '#0f0';
-    }
-    function logLine(t) {
-      consoleEl.innerHTML += t + "<br/>";
-      consoleEl.scrollTop = consoleEl.scrollHeight;
-    }
-    function setProgress(pct) {
-      progressBar.style.width = pct + "%";
-    }
-    function clearTimers() {
-      if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
-      if (logTimer) { clearInterval(logTimer); logTimer = null; }
-    }
-    function stopParty() { partyTimerActive = false; }
+    function setStatus(t,color){ statusText.textContent=t; statusText.style.color=color||'#0f0'; }
+    function logLine(t){ consoleEl.innerHTML+=t+"<br/>"; consoleEl.scrollTop=consoleEl.scrollHeight; }
+    function setProgress(p){ progressBar.style.width=p+"%";}
+    function clearTimers(){ if(countdownTimer){clearInterval(countdownTimer);countdownTimer=null} if(logTimer){clearInterval(logTimer);logTimer=null} }
+    function stopParty(){ partyTimerActive=false; }
 
-    // ----- LAUNCH -----
-    function initiateLaunch() {
-      if (currentPhase !== "IDLE") return;
-      currentPhase = "COUNTDOWN";
-      setStatus("COUNTDOWN", "#ff9800");
-      launchBtn.style.display = "none";
-      abortBtn.style.display = "inline-block";
-      resetBtn.style.display = "none";
-      consoleEl.innerHTML = "";
-      finaleEl.innerHTML = "";
-      progressWrap.style.display = "none";
-      setProgress(0);
+    // ===== LAUNCH =====
+    function initiateLaunch(){
+      if(currentPhase!=="IDLE") return;
+      currentPhase="COUNTDOWN";
+      setStatus("COUNTDOWN","#ff9800");
+      launchBtn.style.display="none";
+      abortBtn.style.display="inline-block";
+      resetBtn.style.display="none";
+      consoleEl.innerHTML=""; finaleEl.innerHTML="";
+      progressWrap.style.display="none"; setProgress(0);
 
-      let n = 10;
-      countdownEl.style.animation = "glow 1s infinite";
-      countdownLabel.textContent = "ARMING SEQUENCE…";
-      countdownEl.textContent = n;
+      let n=10;
+      countdownEl.classList.remove("blast");
+      countdownEl.textContent=n;
+      countdownLabel.textContent="ARMING SEQUENCE…";
 
-      countdownTimer = setInterval(() => {
+      countdownTimer=setInterval(()=>{
         n--;
-        if (n >= 0) {
-          countdownEl.textContent = n;
-          if (n <= 3) { countdownLabel.textContent = "FINAL VALIDATIONS…"; }
+        if(n>=0){ 
+          countdownEl.textContent=n;
+          if(n<=3) countdownLabel.textContent="FINAL VALIDATIONS…";
         } else {
-          clearInterval(countdownTimer); countdownTimer = null;
-          countdownEl.textContent = "DEPLOYMENT INITIATED";
-          countdownEl.style.animation = "none";
-          countdownLabel.textContent = "";
+          clearInterval(countdownTimer); countdownTimer=null;
+          countdownEl.classList.add("blast");
+          countdownLabel.textContent="";
           startLogs();
         }
-      }, 1000);
+      },1000);
     }
 
-    // ----- ABORT -----
-    function abortLaunch() {
-      if (currentPhase !== "COUNTDOWN" && currentPhase !== "DEPLOYING") return;
-      currentPhase = "ABORTED";
-      setStatus("ABORTED", "#ff1744");
-      clearTimers();
-      stopParty();
+    // ===== ABORT =====
+    function abortLaunch(){
+      if(currentPhase!=="COUNTDOWN" && currentPhase!=="DEPLOYING") return;
+      currentPhase="ABORTED"; setStatus("ABORTED","#ff1744");
+      clearTimers(); stopParty();
 
-      // Visual drama
-      strobe.style.display = "block";
-      document.body.classList.add("shake");
+      strobe.style.display="block"; document.body.classList.add("shake");
 
-      // Screen takeover
-      finaleEl.innerHTML = `
+      finaleEl.innerHTML=`
         <h2 style="color:#ff5252; font-size:40px; margin:12px 0;">🚨 MISSION ABORTED 🚨</h2>
         <p style="color:#ff8a80; margin:0 0 10px;">Rollback engaged. Systems returning to safe state.</p>
       `;
 
-      // Rollback logs
-      consoleEl.innerHTML = "";
-      const rollback = [
+      consoleEl.innerHTML="";
+      const rollback=[
         "[ABORT] Signal received. Stopping countdown…",
         "Terminating deployment containers…",
         "Reverting configuration to last known good…",
@@ -144,30 +222,25 @@
         "Validating service health…",
         "All systems back to SAFE mode."
       ];
-      let i = 0;
-      logTimer = setInterval(() => {
-        if (i < rollback.length) { logLine(rollback[i++]); setProgress(Math.min(100, (i/rollback.length)*100)); }
-        else {
-          clearInterval(logTimer); logTimer = null;
-          abortBtn.style.display = "none";
-          resetBtn.style.display = "inline-block";
-          progressWrap.style.display = "block";
+      progressWrap.style.display="block"; setProgress(0);
+      let i=0;
+      logTimer=setInterval(()=>{
+        if(i<rollback.length){ logLine(rollback[i++]); setProgress(Math.min(100,(i/rollback.length)*100)); }
+        else{
+          clearInterval(logTimer); logTimer=null;
+          abortBtn.style.display="none"; resetBtn.style.display="inline-block";
           setProgress(100);
-          // calm lights after a beat
-          setTimeout(() => { strobe.style.display = "none"; document.body.classList.remove("shake"); }, 1200);
+          setTimeout(()=>{ strobe.style.display="none"; document.body.classList.remove("shake"); }, 1200);
         }
-      }, 700);
+      },700);
     }
 
-    // ----- LOGS / DEPLOY -----
-    function startLogs() {
-      currentPhase = "DEPLOYING";
-      setStatus("DEPLOYING", "#00e5ff");
-      consoleEl.innerHTML = "";
-      progressWrap.style.display = "block";
-      setProgress(0);
+    // ===== DEPLOY LOGS =====
+    function startLogs(){
+      currentPhase="DEPLOYING"; setStatus("DEPLOYING","#00e5ff");
+      consoleEl.innerHTML=""; progressWrap.style.display="block"; setProgress(0);
 
-      const logs = [
+      const logs=[
         "Connecting to production cluster…",
         "Verifying release artifacts…",
         "Initializing Kubernetes pods…",
@@ -182,95 +255,95 @@
         "Deployment complete. All systems GO!"
       ];
 
-      let i = 0;
-      logTimer = setInterval(() => {
-        if (currentPhase === "ABORTED") { clearInterval(logTimer); logTimer = null; return; }
-        if (i < logs.length) {
-          logLine("> " + logs[i]);
-          setProgress(Math.floor(((i+1)/logs.length)*100));
-          i++;
-        } else {
-          clearInterval(logTimer); logTimer = null;
-          startCelebration();
-        }
-      }, 800);
+      let i=0;
+      logTimer=setInterval(()=>{
+        if(currentPhase==="ABORTED"){ clearInterval(logTimer); logTimer=null; return; }
+        if(i<logs.length){ logLine("> "+logs[i]); setProgress(Math.floor(((i+1)/logs.length)*100)); i++; }
+        else{ clearInterval(logTimer); logTimer=null; startCelebration(); }
+      },800);
     }
 
-    // ----- CELEBRATION -----
-    function startCelebration() {
-      currentPhase = "SUCCESS";
-      setStatus("SUCCESS", "#00e676");
-      abortBtn.style.display = "none";
-      resetBtn.style.display = "inline-block";
+    // ===== CELEBRATION (cinematic, above the fold) =====
+    function startCelebration(){
+      currentPhase="SUCCESS"; setStatus("SUCCESS", "#00e676");
+      abortBtn.style.display="none"; resetBtn.style.display="inline-block";
 
-      // 8s fireworks confetti
-      partyTimerActive = true;
-      const end = Date.now() + 8000;
-      (function frame() {
-        confetti({ particleCount: 8, angle: 60, spread: 55, origin: { x: 0 } });
-        confetti({ particleCount: 8, angle: 120, spread: 55, origin: { x: 1 } });
-        if (partyTimerActive && Date.now() < end) { requestAnimationFrame(frame); }
+      // fireworks for ~8s
+      partyTimerActive=true;
+      const end=Date.now()+8000;
+      (function frame(){
+        confetti({particleCount:8, angle:60, spread:55, origin:{x:0}});
+        confetti({particleCount:8, angle:120, spread:55, origin:{x:1}});
+        if(partyTimerActive && Date.now()<end) requestAnimationFrame(frame);
       })();
 
-      document.body.style.background = "radial-gradient(circle,#000,#101010 40%, #111)";
-      finaleEl.innerHTML = `
-        <h2 style="color:gold; font-size:44px; animation:flash 1s infinite; margin:10px 0;">✅ SYSTEMS ONLINE</h2>
-        <p style="font-size:18px; margin:6px 0 14px; color:#ddd;">Tech Release successfully deployed.</p>
-        <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width="300" alt="victory cat"/>
-      `;
+      progressWrap.style.display="none";
+
+      // roll the console up with cinematic shutter
+      consoleEl.classList.add("rollup");
+
+      // stage the hero after the roll-up
+      setTimeout(()=>{
+        document.body.style.background="radial-gradient(circle,#000,#101010 40%, #111)";
+        document.body.style.display="flex";
+        document.body.style.flexDirection="column";
+        document.body.style.alignItems="center";
+        document.body.style.justifyContent="center";
+        document.body.style.height="100vh";
+
+        finaleEl.innerHTML=`
+          <div class="finale-hero">
+            <h1 class="online-badge">✅ SYSTEMS ONLINE</h1>
+            <p class="subtitle">Tech Release successfully deployed.</p>
+            <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width="260" class="cat" alt="victory cat"/>
+          </div>
+        `;
+      },950);
     }
 
-    // ----- RESET -----
-    function resetMission() {
-      clearTimers();
-      stopParty();
-      strobe.style.display = "none";
-      document.body.classList.remove("shake");
-      currentPhase = "IDLE";
-      setStatus("IDLE", "#0f0");
-      countdownEl.textContent = "";
-      countdownEl.style.animation = "none";
-      countdownLabel.textContent = "";
-      consoleEl.innerHTML = "";
-      finaleEl.innerHTML = "";
-      progressWrap.style.display = "none";
-      setProgress(0);
-      launchBtn.style.display = "inline-block";
-      abortBtn.style.display = "none";
-      resetBtn.style.display = "none";
-      document.body.style.background = "#000";
+    // ===== RESET (with confetti micro-burst + toast) =====
+    function resetMission(){
+      // celebratory micro-burst 🎉
+      confetti({
+        particleCount: 120,
+        spread: 70,
+        startVelocity: 45,
+        scalar: 0.9,
+        origin: { x: 0.8, y: 0.15 } // pops near the status badge
+      });
+
+      // quick “ready” toast
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = 'Ready for another run ✨';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2800);
+
+      // normal reset flow
+      clearTimers(); stopParty();
+      strobe.style.display="none"; document.body.classList.remove("shake");
+      currentPhase="IDLE"; setStatus("IDLE","#0f0");
+
+      countdownEl.textContent=""; countdownEl.classList.remove("blast");
+      countdownLabel.textContent="";
+
+      consoleEl.classList.remove("rollup");
+      consoleEl.style.height="320px";
+      consoleEl.style.paddingTop="20px";
+      consoleEl.style.paddingBottom="20px";
+      consoleEl.style.borderWidth="2px";
+      consoleEl.innerHTML=""; finaleEl.innerHTML="";
+
+      progressWrap.style.display="none"; setProgress(0);
+
+      launchBtn.style.display="inline-block";
+      abortBtn.style.display="none";
+      resetBtn.style.display="none";
+
+      document.body.style.background="#000";
+      document.body.style.display="block";
+      document.body.style.height="auto";
     }
   </script>
-
-  <style>
-    @keyframes flash {
-      0% { opacity: 1; }
-      50% { opacity: .1; }
-      100% { opacity: 1; }
-    }
-    @keyframes pulse {
-      0% { box-shadow:0 0 10px #ff5722; }
-      50% { box-shadow:0 0 30px #ff9800; }
-      100% { box-shadow:0 0 10px #ff5722; }
-    }
-    @keyframes glow {
-      0% { text-shadow: 0 0 8px #ff9800; color:#fff; }
-      50% { text-shadow: 0 0 24px #ff9800; color:#ffe082; }
-      100% { text-shadow: 0 0 8px #ff9800; color:#fff; }
-    }
-    @keyframes strobe {
-      0% { background: rgba(255,0,0,0.06); }
-      50% { background: rgba(255,0,0,0.26); }
-      100% { background: rgba(255,0,0,0.06); }
-    }
-    @keyframes shakeAnim {
-      0%,100% { transform: translateX(0); }
-      20% { transform: translateX(-6px); }
-      40% { transform: translateX(6px); }
-      60% { transform: translateX(-4px); }
-      80% { transform: translateX(4px); }
-    }
-    .shake { animation: shakeAnim 0.4s ease-in-out 6; }
-  </style>
 </body>
 </html>

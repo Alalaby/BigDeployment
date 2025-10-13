@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>🚀 THE BIG TECH DEPLOY — MISSION CONTROL (SILLY EDITION)</title>
+  <title>🚀 THE BIG TECH DEPLOY — MISSION CONTROL (MAX CHAOS)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root{
@@ -12,10 +12,18 @@
     a{color:#8ab4f8;text-decoration:none;border-bottom:1px dashed #8ab4f8}
     a:hover{opacity:.85}
 
-    header{ text-align:center; padding:22px 10px; border-bottom:2px solid #151515;}
+    header{ text-align:center; padding:22px 10px; border-bottom:2px solid #151515; position:relative;}
     header h1{ margin:0 0 8px; color:#ff5555; letter-spacing:.5px;}
     header .status{ opacity:.9 }
     #statusText{ color:#0f0; }
+
+    /* Stage light sweep for extra drama */
+    header::after{
+      content:""; position:absolute; inset:0; pointer-events:none;
+      background: linear-gradient(110deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0) 100%);
+      transform: translateX(-100%); animation: sweep 5s linear infinite;
+    }
+    @keyframes sweep{ 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
 
     main{ max-width:1000px; margin:0 auto; padding:16px;}
 
@@ -33,23 +41,19 @@
     #resetBtn{
       display:none;font-size:18px;padding:12px 22px;background:#222;color:#fff;border:1px solid #555;border-radius:10px;cursor:pointer;
     }
+    #copyBtn, #fullBtn{
+      font-size:14px;padding:10px 14px;background:#111;color:#ddd;border:1px solid #333;border-radius:10px;cursor:pointer;
+    }
 
-    /* Toggles */
-    .toggles{ display:flex; gap:14px; justify-content:center; align-items:center; flex-wrap:wrap; margin-top:8px; font-size:13px; opacity:.9}
-    .toggles label{ display:flex; gap:8px; align-items:center; background:#111; border:1px solid #1f1f1f; padding:6px 10px; border-radius:10px; }
-    .toggles input{ transform: scale(1.2); }
-
-    /* Countdown + ring */
+    /* Countdown ring */
     #gridTop{ display:grid; grid-template-columns: 220px 1fr 220px; gap:12px; margin:18px 0 8px; align-items:center;}
     #countdownWrap{ text-align:center;}
-    #countdown{ font-size:64px; letter-spacing:2px; animation:glow 1s infinite; }
     .ring{ width:160px; height:160px; border-radius:50%; margin:8px auto; background:
       conic-gradient(#1f1f1f 0deg, #1f1f1f 360deg);
       box-shadow: inset 0 0 0 8px #111, 0 0 16px rgba(255,152,0,.3);
       position:relative;
     }
-    .ring .dot{ position:absolute; inset:8px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#000; color:#ffe082; font-size:28px; }
-    #countdownLabel{ height:24px; color:var(--accent); text-align:center; }
+    .ring .dot{ position:absolute; inset:8px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#000; color:#ffe082; font-size:36px; animation:glow 1s infinite; }
 
     /* Preflight checklist */
     #preflight{ background:#0c0c0c; border:1px solid #161616; border-radius:10px; padding:12px; min-height:160px;}
@@ -60,17 +64,22 @@
     .check.done .box{ background:#00e676; border-color:#00e676; box-shadow:0 0 8px rgba(0,230,118,.4)}
     .check.done .label{ color:#d2ffd2}
 
+    /* Fun metrics */
+    #funFacts{background:#0c0c0c;border:1px solid #161616;border-radius:10px;padding:12px;min-height:160px;}
+    #countdownLabel{ height:24px; color:var(--accent); text-align:center; }
+
+    /* Progress (now ABOVE the console) */
+    #progressWrap{ margin-top:16px; display:none;}
+    #progressShell{ position:relative; background:#111; border:1px solid #333; border-radius:8px; overflow:hidden;}
+    #progressBar{ height:18px; width:0%; background:linear-gradient(90deg,#00e676,#00b0ff,#ff00e1); background-size:200% 100%; animation:barGlow 2.2s linear infinite;}
+    #progressPct{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:12px; color:#111; font-weight:bold; text-shadow: 0 0 4px rgba(255,255,255,.25);}
+    @keyframes barGlow{ 0%{background-position:0 0}100%{background-position:200% 0}}
+
     /* Console */
     #console{
       background:#000;color:#00e676;padding:18px;margin-top:10px;height:280px;overflow-y:auto;text-align:left;border:2px solid var(--line);
       border-radius:10px;
     }
-
-    /* Progress */
-    #progressWrap{ margin-top:16px; display:none;}
-    #progressShell{ background:#111; border:1px solid #333; border-radius:8px; overflow:hidden;}
-    #progressBar{ height:14px; width:0%; background:linear-gradient(90deg,#00e676,#00b0ff,#ff00e1); background-size:200% 100%; animation:barGlow 2.2s linear infinite;}
-    @keyframes barGlow{ 0%{background-position:0 0}100%{background-position:200% 0}}
 
     #finale{ text-align:center; margin:20px 0 8px;}
 
@@ -110,7 +119,7 @@
       100%{ transform:scale(.6) translateY(-20px); opacity:0 }
     }
 
-    /* Reset confetti toast + Achievements */
+    /* Toasts */
     .toast {
       position: fixed; top: 14px; right: 14px;
       background:#111; color:#fff;
@@ -127,9 +136,7 @@
 
     /* Emoji rain */
     .emoji{ position:fixed; top:-40px; font-size:28px; pointer-events:none; animation: fall linear forwards; z-index:9998; }
-    @keyframes fall{
-      to{ transform: translateY(110vh) rotate(360deg); opacity:.9 }
-    }
+    @keyframes fall{ to{ transform: translateY(110vh) rotate(360deg); opacity:.9 } }
   </style>
 </head>
 <body>
@@ -144,12 +151,8 @@
       <button id="launchBtn" onclick="initiateLaunch()">LAUNCH DEPLOYMENT</button>
       <button id="abortBtn" onclick="abortLaunch()">ABORT MISSION</button>
       <button id="resetBtn" onclick="resetMission()">RESET</button>
-    </div>
-
-    <!-- Fun toggles -->
-    <div class="toggles">
-      <label><input type="checkbox" id="chaosToggle"> Chaos Mode (longer logs, extra drama)</label>
-      <label><input type="checkbox" id="turboToggle"> Turbo Confetti™</label>
+      <button id="copyBtn" onclick="copyLink()">Copy Link</button>
+      <button id="fullBtn" onclick="goFullscreen()">Fullscreen</button>
     </div>
 
     <!-- Grid: preflight | ring+countdown | fun facts -->
@@ -164,11 +167,10 @@
       </section>
 
       <section id="countdownWrap">
-        <div class="ring"><div class="dot" id="ringDot">10</div></div>
-        <div id="countdown">10</div>
+        <div class="ring"><div class="dot" id="ringDot">12</div></div>
       </section>
 
-      <section id="funFacts" style="background:#0c0c0c;border:1px solid #161616;border-radius:10px;padding:12px;min-height:160px;">
+      <section id="funFacts">
         <h3 style="margin:0 0 6px;color:#ddd;">Fun Metrics</h3>
         <div id="metric1">Latency (imaginary): 1.2ms</div>
         <div id="metric2">Bugs avoided by luck: 7</div>
@@ -179,14 +181,17 @@
 
     <div id="countdownLabel"></div>
 
-    <!-- Console -->
-    <div id="console"></div>
-
-    <!-- Progress -->
+    <!-- Progress (above console) -->
     <div id="progressWrap">
       <div style="font-size:12px; opacity:.8; margin-bottom:6px;">Deployment Progress</div>
-      <div id="progressShell"><div id="progressBar"></div></div>
+      <div id="progressShell">
+        <div id="progressBar"></div>
+        <div id="progressPct">0%</div>
+      </div>
     </div>
+
+    <!-- Console -->
+    <div id="console"></div>
 
     <!-- Finale -->
     <div id="finale"></div>
@@ -205,28 +210,28 @@
     let countdownTimer=null, logTimer=null, partyTimerActive=false, ringDeg=0;
     let currentPhase="IDLE"; // IDLE | COUNTDOWN | DEPLOYING | SUCCESS | ABORTED
     const emojis = ["🚀","🎉","🐱","🔥","✨","💾","🛰️","🧪","🧰","🧯"];
+    const CHAOS=true;            // always on
+    const TURBO_CONFETTI=true;   // always on
 
     // DOM
     const statusText=document.getElementById("statusText");
-    const countdownEl=document.getElementById("countdown");
     const ringDot=document.getElementById("ringDot");
     const countdownLabel=document.getElementById("countdownLabel");
     const consoleEl=document.getElementById("console");
     const progressWrap=document.getElementById("progressWrap");
     const progressBar=document.getElementById("progressBar");
+    const progressPct=document.getElementById("progressPct");
     const finaleEl=document.getElementById("finale");
     const launchBtn=document.getElementById("launchBtn");
     const abortBtn=document.getElementById("abortBtn");
     const resetBtn=document.getElementById("resetBtn");
     const strobe=document.getElementById("strobe");
     const pfEls=[...Array(5)].map((_,i)=>document.getElementById("pf"+(i+1)));
-    const chaosToggle=document.getElementById("chaosToggle");
-    const turboToggle=document.getElementById("turboToggle");
 
     // Utils
     function setStatus(t,color){ statusText.textContent=t; statusText.style.color=color||'#0f0'; }
     function logLine(t){ consoleEl.innerHTML+=t+"<br/>"; consoleEl.scrollTop=consoleEl.scrollHeight; }
-    function setProgress(p){ progressBar.style.width=p+"%";}
+    function setProgress(p){ progressBar.style.width=p+"%"; progressPct.textContent = p + "%"; }
     function clearTimers(){ if(countdownTimer){clearInterval(countdownTimer);countdownTimer=null} if(logTimer){clearInterval(logTimer);logTimer=null} }
     function stopParty(){ partyTimerActive=false; }
     function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
@@ -238,7 +243,7 @@
       const tick = setInterval(()=>{
         if(i<items.length){ items[i].classList.add("done"); i++; }
         else clearInterval(tick);
-      }, 350);
+      }, 300);
     }
 
     // Fun metrics wiggle
@@ -254,7 +259,7 @@
     }
 
     // Emoji rain
-    function emojiRain(durationMs=6000, speed=4000){
+    function emojiRain(durationMs=7000, speed=4200){
       const end=Date.now()+durationMs;
       const drop=()=>{
         const e=document.createElement('div');
@@ -272,6 +277,29 @@
       loop();
     }
 
+    // Copy link
+    function copyLink(){
+      navigator.clipboard.writeText(location.href).then(()=>{
+        makeToast("Link copied to clipboard 🔗");
+      });
+    }
+
+    // Fullscreen
+    function goFullscreen(){
+      const el = document.documentElement;
+      if(el.requestFullscreen) el.requestFullscreen();
+      else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else if(el.msRequestFullscreen) el.msRequestFullscreen();
+    }
+
+    function makeToast(msg, cls=""){
+      const t=document.createElement('div');
+      t.className='toast '+cls;
+      t.textContent=msg;
+      document.body.appendChild(t);
+      setTimeout(()=>t.remove(), 2600);
+    }
+
     // ===== LAUNCH =====
     function initiateLaunch(){
       if(currentPhase!=="IDLE") return;
@@ -284,26 +312,29 @@
       progressWrap.style.display="none"; setProgress(0);
       runPreflight(); wiggleMetrics();
 
-      let n=10; ringDeg=0;
-      countdownEl.classList.remove("blast");
-      countdownEl.textContent=n; ringDot.textContent=n;
+      let n=12; ringDeg=0;
+      ringDot.classList.remove("blast");
+      ringDot.textContent=n;
       countdownLabel.textContent="ARMING SEQUENCE…";
-      // progress ring fill
-      const stepDeg=360/11;
+      const stepDeg=360/13;
 
       countdownTimer=setInterval(()=>{
         n--;
         ringDeg += stepDeg;
         document.querySelector('.ring').style.background = `conic-gradient(#ff9800 ${ringDeg}deg, #1f1f1f ${ringDeg}deg 360deg)`;
-        countdownEl.textContent=Math.max(0,n); ringDot.textContent=Math.max(0,n);
-        if(n<=3 && n>=0) countdownLabel.textContent="FINAL VALIDATIONS…";
+        const show = Math.max(0,n);
+        ringDot.textContent=show;
+
+        if(n<=3 && n>=0) { countdownLabel.textContent="FINAL VALIDATIONS…"; document.body.classList.add('shake'); setTimeout(()=>document.body.classList.remove('shake'), 400); }
         if(n<0){
           clearInterval(countdownTimer); countdownTimer=null;
-          countdownEl.classList.add("blast");
+          ringDot.classList.add("blast");
           countdownLabel.textContent="";
           startLogs();
+        } else {
+          if(n%2===0) wiggleMetrics();
         }
-      },1000);
+      }, 1000);
     }
 
     // ===== ABORT =====
@@ -368,26 +399,26 @@
         "Brewing emergency coffee…",
         "Convincing servers to cooperate…",
         "Performing pre-deployment dance…",
-        "Cleaning up confetti from last time…"
+        "Cleaning up confetti from last time…",
+        "Consulting rubber duck on final steps…",
+        "Turning it off and on again…"
       ];
 
-      const logs = chaosToggle.checked ? [...baseLogs.slice(0,5), ...chaosExtras, ...baseLogs.slice(5)] : baseLogs;
+      const logs = [...baseLogs.slice(0,5), ...chaosExtras, ...baseLogs.slice(5)];
 
       let i=0;
-      const intervalMs = chaosToggle.checked ? 900 : 800;
-
       logTimer=setInterval(()=>{
         if(currentPhase==="ABORTED"){ clearInterval(logTimer); logTimer=null; return; }
         if(i<logs.length){
-          logLine("> "+logs[i]);
+          const jitter = Math.random()<0.5 ? "" : ".".repeat(rand(1,3));
+          logLine("> "+logs[i]+jitter);
           setProgress(Math.floor(((i+1)/logs.length)*100));
-          // fun metrics wiggle occasionally
           if(i%3===0) wiggleMetrics();
           i++;
         } else {
           clearInterval(logTimer); logTimer=null; startCelebration();
         }
-      }, intervalMs);
+      }, 850);
     }
 
     // ===== CELEBRATION (cinematic, above the fold) =====
@@ -395,9 +426,9 @@
       currentPhase="SUCCESS"; setStatus("SUCCESS", "#00e676");
       abortBtn.style.display="none"; resetBtn.style.display="inline-block";
 
-      // Turbo Confetti vs regular
-      let duration = turboToggle.checked ? 12000 : 8000;
-      let count = turboToggle.checked ? 14 : 8;
+      // Turbo Confetti (always on)
+      let duration = 12000;
+      let count = 14;
 
       partyTimerActive=true;
       const end=Date.now()+duration;
@@ -408,7 +439,7 @@
       })();
 
       // Emoji rain for extra silly effect
-      emojiRain(6000, 4200);
+      emojiRain(7000, 4200);
 
       progressWrap.style.display="none";
       consoleEl.classList.add("rollup");
@@ -439,13 +470,7 @@
         ];
         const howMany = rand(1,2);
         for(let k=0;k<howMany;k++){
-          setTimeout(()=>{
-            const t=document.createElement('div');
-            t.className='toast achv';
-            t.textContent = ach[rand(0,ach.length-1)];
-            document.body.appendChild(t);
-            setTimeout(()=>t.remove(), 2800);
-          }, 1200 + k*800);
+          setTimeout(()=> makeToast(ach[rand(0,ach.length-1)], "achv"), 1200 + k*800);
         }
 
       },950);
@@ -453,30 +478,25 @@
 
     // ===== RESET (with confetti micro-burst + toast) =====
     function resetMission(){
-      // celebratory micro-burst 🎉
+      // micro-burst 🎉
       confetti({
         particleCount: 120,
         spread: 70,
         startVelocity: 45,
         scalar: 0.9,
-        origin: { x: 0.8, y: 0.15 } // pops near the status badge
+        origin: { x: 0.8, y: 0.15 }
       });
 
-      // quick “ready” toast
-      const toast = document.createElement('div');
-      toast.className = 'toast';
-      toast.textContent = 'Ready for another run ✨';
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 2800);
+      makeToast('Ready for another run ✨');
 
       // normal reset flow
       clearTimers(); stopParty();
       strobe.style.display="none"; document.body.classList.remove("shake");
       currentPhase="IDLE"; setStatus("IDLE","#0f0");
 
-      countdownEl.textContent="10"; ringDot.textContent="10";
+      ringDot.textContent="12";
       document.querySelector('.ring').style.background = `conic-gradient(#1f1f1f 0deg, #1f1f1f 360deg)`;
-      countdownEl.classList.remove("blast");
+      ringDot.classList.remove("blast");
       countdownLabel.textContent="";
 
       consoleEl.classList.remove("rollup");

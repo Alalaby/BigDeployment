@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>🚀 Prod Release — Mission Control</title>
+<title>🚀 Operational Go-Live — Mission Control</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
 :root { --accent:#ff9800; --danger:#ff1744; --ok:#00e676; --line:#333; }
@@ -10,7 +10,7 @@ html,body{height:100%;margin:0;background:#000;color:#fff;font-family:monospace;
 header{text-align:center;padding:22px 10px;border-bottom:2px solid #151515;position:relative;}
 header h1{margin:0 0 8px;color:#ff5555;}
 #statusText{color:#0f0;}
-main{max-width:1000px;margin:0 auto;padding:16px;}
+main{max-width:1100px;margin:0 auto;padding:16px;}
 #controls{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
 #controls button{border:none;border-radius:14px;cursor:pointer;}
 #launchBtn{font-size:28px;padding:20px 44px;color:#fff;background:linear-gradient(90deg,#f44336,#ff9800);box-shadow:0 0 20px #ff5722;animation:pulse 1.5s infinite;}
@@ -18,9 +18,12 @@ main{max-width:1000px;margin:0 auto;padding:16px;}
 #resetBtn{display:none;font-size:18px;padding:12px 22px;background:#222;color:#fff;border:1px solid #555;border-radius:10px;}
 @keyframes pulse{0%{box-shadow:0 0 10px #ff5722}50%{box-shadow:0 0 30px #ff9800}100%{box-shadow:0 0 10px #ff5722}}
 
-#gridTop{display:grid;grid-template-columns:220px 1fr 220px;gap:12px;margin:18px 0 8px;align-items:center;}
-@media(max-width:700px){#gridTop{grid-template-columns:1fr;gap:14px;}}
+/* Layout row */
+#topRow{display:grid;grid-template-columns:230px 200px 1fr 230px;gap:12px;margin:18px 0 8px;align-items:stretch;}
+@media(max-width:960px){#topRow{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;}}
+@media(max-width:650px){#topRow{grid-template-columns:1fr;grid-template-rows:auto auto auto auto;}}
 
+/* Ring countdown */
 .ring{width:160px;height:160px;border-radius:50%;margin:8px auto;background:conic-gradient(#1f1f1f 0deg,#1f1f1f 360deg);
  box-shadow:inset 0 0 0 8px #111,0 0 16px rgba(255,152,0,.3);position:relative;}
 .ring .dot{position:absolute;inset:8px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#000;color:#ffe082;font-size:36px;animation:glow 1s infinite;}
@@ -28,31 +31,47 @@ main{max-width:1000px;margin:0 auto;padding:16px;}
 .blast{animation:blastOut 600ms cubic-bezier(.2,.8,.2,1) forwards;}
 @keyframes blastOut{0%{transform:scale(1);opacity:1}60%{transform:scale(1.6);opacity:.6}100%{transform:scale(.6) translateY(-20px);opacity:0}}
 
-#preflight,#funFacts{background:#0c0c0c;border:1px solid #161616;border-radius:10px;padding:12px;min-height:160px;}
-#preflight h3,#funFacts h3{margin:0 0 6px;color:#ddd;}
-.check{display:flex;align-items:center;gap:8px;margin:6px 0;opacity:.6}
+/* Panels */
+.panel{background:#0c0c0c;border:1px solid #161616;border-radius:10px;padding:12px;}
+.panel h3{margin:0 0 6px;color:#ddd;font-size:14px;text-transform:uppercase;letter-spacing:.5px;}
+.check{display:flex;align-items:center;gap:8px;margin:6px 0;opacity:.6;font-size:13px;}
 .check .box{width:14px;height:14px;border:1px solid #555;border-radius:3px;}
 .check.done{opacity:1}
 .check.done .box{background:#00e676;border-color:#00e676;box-shadow:0 0 8px rgba(0,230,118,.4)}
 .check.done .label{color:#d2ffd2}
 
+/* Go-live gates */
+.gate{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:13px;opacity:.5;}
+.gate .dot{width:10px;height:10px;border-radius:50%;background:#555;}
+.gate.on{opacity:1;}
+.gate.on .dot{background:#00e676;box-shadow:0 0 10px rgba(0,230,118,.6);}
+
+/* Fun metrics */
+.metric-row{font-size:13px;margin:4px 0;}
+.metric-row strong{font-weight:bold;}
+#heatVal.hot{color:#ff5252;}
+
+/* Progress */
 #progressWrap{margin-top:16px;display:none;}
 #progressShell{position:relative;background:#111;border:1px solid #333;border-radius:8px;overflow:hidden;}
 #progressBar{height:18px;width:0%;background:linear-gradient(90deg,#00e676,#00b0ff,#ff00e1);background-size:200% 100%;animation:barGlow 2.2s linear infinite;}
 @keyframes barGlow{0%{background-position:0 0}100%{background-position:200% 0}}
 #progressPct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#111;font-weight:bold;text-shadow:0 0 4px rgba(255,255,255,.25);}
 
+/* Console */
 #console{background:#000;color:#00e676;padding:18px;margin-top:10px;height:280px;overflow-y:auto;text-align:left;border:2px solid var(--line);border-radius:10px;}
 #console.rollup{overflow:hidden;border-color:#222;animation:rollUp .9s ease forwards;}
 @keyframes rollUp{0%{height:280px;opacity:1;filter:blur(0)}35%{transform:scaleY(.98);filter:blur(1px)}70%{transform:scaleY(.92);filter:blur(2px);opacity:.6}100%{height:0;padding-top:0;padding-bottom:0;border-width:0;opacity:0;filter:blur(3px)}}
 
+/* Finale */
 .finale-hero{text-align:center;animation:popIn 600ms cubic-bezier(.2,.8,.2,1) forwards;opacity:0;transform:translateY(10px) scale(.98);}
 @keyframes popIn{to{opacity:1;transform:translateY(0) scale(1)}}
 .online-badge{color:gold;font-size:46px;margin:6px 0;animation:flash 1s infinite;}
 .subtitle{font-size:18px;margin:4px 0 14px;color:#ddd;}
-.cat{border-radius:12px;box-shadow:0 8px 40px rgba(255,215,0,.08);}
+.cat{border-radius:12px;box-shadow:0 8px 40px rgba(255,215,0,.08);cursor:pointer;}
 @keyframes flash{0%{opacity:1}50%{opacity:.1}100%{opacity:1}}
 
+/* Hoops shimmer */
 @keyframes shimmerRainbow{0%{background-position:-200% 0;opacity:1}80%{opacity:1}100%{background-position:200% 0;opacity:.4}}
 .shimmer{
   background:linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
@@ -60,6 +79,7 @@ main{max-width:1000px;margin:0 auto;padding:16px;}
   animation:shimmerRainbow 1.5s ease forwards;
 }
 
+/* Toasts and emoji */
 .toast{position:fixed;top:14px;right:14px;background:#111;color:#fff;border:1px solid #333;border-radius:10px;
  padding:10px 14px;font-size:13px;box-shadow:0 8px 30px rgba(0,0,0,.4);opacity:0;transform:translateY(-8px);
  animation:toastIn .45s ease-out forwards,toastOut .6s ease-in 2.4s forwards;z-index:9999;}
@@ -67,11 +87,23 @@ main{max-width:1000px;margin:0 auto;padding:16px;}
 @keyframes toastOut{to{opacity:0;transform:translateY(-8px)}}
 .emoji{position:fixed;top:-40px;font-size:28px;pointer-events:none;animation:fall linear forwards;z-index:9998;}
 @keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:.9}}
+
+/* Strobe & shake */
 #strobe{display:none;position:fixed;inset:0;pointer-events:none;background:rgba(255,0,0,0.18);mix-blend-mode:screen;animation:strobe 1s infinite;}
 @keyframes strobe{0%{background:rgba(255,0,0,.06)}50%{background:rgba(255,0,0,.26)}100%{background:rgba(255,0,0,.06)}}
 .shake{animation:shakeAnim .4s ease-in-out 6;}
 @keyframes shakeAnim{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 
+/* Imminent overlay */
+#goLiveAlert{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);
+  color:#ff5555;font-size:24px;z-index:9990;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;flex-direction:column;
+}
+#goLiveAlert span{font-size:14px;opacity:.8;margin-top:6px;}
+
+/* Responsive tweaks */
 @media(max-width:700px){.ring{width:140px;height:140px}.ring .dot{font-size:30px}#console{height:220px}#controls button{flex:1 1 100%}}
 @media(max-width:420px){.ring{width:120px;height:120px}.ring .dot{font-size:26px}#console{height:180px}.online-badge{font-size:34px}}
 
@@ -80,42 +112,59 @@ main{max-width:1000px;margin:0 auto;padding:16px;}
 </head>
 <body>
 <header>
-  <h1>🔥 PROD RELEASE: MISSION CONTROL 🔥</h1>
+  <h1>🔥 OPERATIONAL GO-LIVE: THE BIG ONE 🔥</h1>
   <div class="status">Status: <span id="statusText">IDLE</span></div>
 </header>
 
 <main>
   <div id="controls">
-    <button id="launchBtn" onclick="initiateLaunch()">LAUNCH DEPLOYMENT</button>
+    <button id="launchBtn" onclick="initiateLaunch()">ARM OPERATIONAL GO-LIVE</button>
     <button id="abortBtn" onclick="abortLaunch()">ABORT MISSION</button>
     <button id="resetBtn" onclick="resetMission()">RESET</button>
   </div>
 
-  <div id="gridTop">
-    <section id="preflight">
+  <div id="topRow">
+    <!-- Preflight -->
+    <section class="panel" id="preflight">
       <h3>Pre-flight Checklist</h3>
-      <div class="check" id="pf1"><div class="box"></div><div class="label">Credentials located</div></div>
-      <div class="check" id="pf2"><div class="box"></div><div class="label">Servers caffeinated</div></div>
-      <div class="check" id="pf3"><div class="box"></div><div class="label">Requirements understood</div></div>
-      <div class="check" id="pf4"><div class="box"></div><div class="label">On the Parliament to do list</div></div>
+      <div class="check" id="pf1"><div class="box"></div><div class="label">Runbooks updated (mostly)</div></div>
+      <div class="check" id="pf2"><div class="box"></div><div class="label">Support channels on standby</div></div>
+      <div class="check" id="pf3"><div class="box"></div><div class="label">On-call humans caffeinated</div></div>
+      <div class="check" id="pf4"><div class="box"></div><div class="label">Rollback plan located</div></div>
       <div class="check" id="pf5"><div class="box"></div><div class="label">Sanity checks mostly passed (CXO questionable)</div></div>
     </section>
 
-    <section id="countdownWrap">
+    <!-- Countdown -->
+    <section class="panel" id="countdownWrap">
+      <h3>T-Minus</h3>
       <div class="ring"><div class="dot" id="ringDot">13</div></div>
+      <div style="font-size:12px;text-align:center;opacity:.8;">to customers seeing this for real</div>
     </section>
 
-    <section id="funFacts">
-      <h3 style="margin:0 0 6px;color:#ddd;">Fun Metrics</h3>
-      <div id="metric1">Latency: probably fine</div>
-      <div id="metric2">Certainty this will work: <strong id="sureNum">60%</strong></div>
-      <div id="metric3">Coffee queue length: 42</div>
-      <div id="metric4">Hoops jumped through: <strong id="hoopsNum">876</strong></div>
+    <!-- Fun metrics -->
+    <section class="panel" id="funFacts">
+      <h3>Operational Metrics</h3>
+      <div class="metric-row">Latency: <strong>provably fine</strong></div>
+      <div class="metric-row">Certainty this will work: <strong id="sureNum">60%</strong></div>
+      <div class="metric-row">Hoops jumped through: <strong id="hoopsNum">8,762</strong></div>
+      <div class="metric-row">Extra requirements jammed in: <strong id="extraNum">0</strong></div>
+      <div class="metric-row">System heat index: <strong id="heatVal">47%</strong></div>
+      <div class="metric-row">CXO sanity status: <strong>questionable</strong></div>
+      <div class="metric-row">Teams on standby: <strong id="teamsNum">3</strong></div>
+    </section>
+
+    <!-- Go-live gates -->
+    <section class="panel" id="gates">
+      <h3>Go-Live Gates</h3>
+      <div class="gate" id="gate1"><div class="dot"></div><div>Business sign-off</div></div>
+      <div class="gate" id="gate2"><div class="dot"></div><div>Sara's sanity checks</div></div>
+      <div class="gate" id="gate3"><div class="dot"></div><div>Regulator not watching</div></div>
+      <div class="gate" id="gate4"><div class="dot"></div><div>CXO belief system stabilised</div></div>
     </section>
   </div>
 
   <div id="progressWrap">
-    <div style="font-size:12px;opacity:.8;margin-bottom:6px;">Deployment Progress</div>
+    <div style="font-size:12px;opacity:.8;margin-bottom:6px;">Operational Deployment Progress</div>
     <div id="progressShell"><div id="progressBar"></div><div id="progressPct">0%</div></div>
   </div>
 
@@ -124,12 +173,16 @@ main{max-width:1000px;margin:0 auto;padding:16px;}
 </main>
 
 <div id="strobe"></div>
+<div id="goLiveAlert">
+  <div>!! OPERATIONAL GO-LIVE IMMINENT !!</div>
+  <span>This is not a drill. Probably.</span>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>
 /* ===== STATE & DOM ===== */
-let countdownTimer=null, logTimer=null, partyTimerActive=false, ringDeg=0, currentPhase="IDLE";
-const emojis=["🚀","🎉","🐱","🔥","✨","💾","🛰️","🧪"];
+let countdownTimer=null, logTimer=null, ringDeg=0, currentPhase="IDLE";
+const emojis=["🚀","🎉","🐱","🔥","✨","💾","🛰️","🧪","📣","🧯"];
 const statusText=document.getElementById("statusText"),
       ringDot=document.getElementById("ringDot"),
       consoleEl=document.getElementById("console"),
@@ -143,7 +196,12 @@ const statusText=document.getElementById("statusText"),
       strobe=document.getElementById("strobe"),
       hoopsEl=document.getElementById("hoopsNum"),
       sureEl=document.getElementById("sureNum"),
-      pfEls=[...Array(5)].map((_,i)=>document.getElementById("pf"+(i+1)));
+      extraEl=document.getElementById("extraNum"),
+      heatEl=document.getElementById("heatVal"),
+      teamsEl=document.getElementById("teamsNum"),
+      pfEls=[...Array(5)].map((_,i)=>document.getElementById("pf"+(i+1))),
+      gateEls=[1,2,3,4].map(i=>document.getElementById("gate"+i)),
+      goLiveAlert=document.getElementById("goLiveAlert");
 
 /* ===== UTILS ===== */
 function setStatus(t,c){statusText.textContent=t;statusText.style.color=c||"#0f0";}
@@ -153,52 +211,99 @@ function clearTimers(){ if(countdownTimer) clearInterval(countdownTimer); if(log
 function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
 function formatInt(n){return n.toLocaleString();}
 function makeToast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2600);}
-function runPreflight(){let i=0;const tick=setInterval(()=>{ if(i<pfEls.length){pfEls[i].classList.add("done"); i++;} else clearInterval(tick); },300);}
+function runPreflight(){let i=0;const tick=setInterval(()=>{ if(i<pfEls.length){pfEls[i].classList.add("done"); i++;} else clearInterval(tick); },260);}
 function emojiRain(dur=7000){const end=Date.now()+dur;const drop=()=>{const e=document.createElement("div");e.className="emoji";e.textContent=emojis[rand(0,emojis.length-1)];e.style.left=Math.random()*100+"vw";e.style.animationDuration=(4000+rand(-800,800))+"ms";document.body.appendChild(e);setTimeout(()=>e.remove(),5200);};(function loop(){for(let i=0;i<rand(2,4);i++)drop();if(Date.now()<end)requestAnimationFrame(loop);})();}
 
 /* ===== LAUNCH ===== */
 function initiateLaunch(){
   if(currentPhase!=="IDLE") return;
+
+  const sure = confirm("This is the OPERATIONAL go-live. Customers, call centres and dashboards will all believe this is real.\n\nAre you REALLY sure?");
+  if(!sure){
+    makeToast("Operational go-live cancelled by human sanity ✅");
+    return;
+  }
+  const sure2 = confirm("For real? This is it.");
+  if(!sure2){
+    makeToast("Operational go-live successfully avoided at the last second.");
+    return;
+  }
+
   currentPhase="COUNTDOWN";
   setStatus("COUNTDOWN","#ff9800");
   launchBtn.style.display="none"; abortBtn.style.display="inline-block"; resetBtn.style.display="none";
   consoleEl.innerHTML=""; finaleEl.innerHTML=""; progressWrap.style.display="none"; setProgress(0);
+  goLiveAlert.style.display="none";
+
   runPreflight();
 
   // Animated metrics during countdown
-  let hoops=876, hoopsTarget=1001;
-  let sure=60, sureTarget=99.9;
+  let hoops=8762, hoopsTarget=10000;
+  let sureVal=60, sureTarget=99.972;
+  let extra=0, extraTarget=47;
+  let heat=47, heatTarget=108;
+  let teams=3, teamsTarget=5;
   let n=13; ringDeg=0;
-  const ticks=n; // 13 ticks to zero
+  const ticks=n;
 
   hoopsEl.textContent=formatInt(hoops);
-  sureEl.textContent=sure.toFixed(0)+"%";
+  sureEl.textContent=sureVal.toFixed(0)+"%";
+  extraEl.textContent=extra;
+  heatEl.textContent=heat+"%";
+  teamsEl.textContent=teams;
   ringDot.textContent=n;
 
   const hoopsStep=(hoopsTarget-hoops)/ticks;
-  const sureStep=(sureTarget-sure)/ticks;
+  const sureStep=(sureTarget-sureVal)/ticks;
+  const extraStep=(extraTarget-extra)/ticks;
+  const heatStep=(heatTarget-heat)/ticks;
+  const teamsStep=(teamsTarget-teams)/ticks;
+
+  let gateIndex=0;
 
   countdownTimer=setInterval(()=>{
-    // advance ring
-    n--; ringDeg+=360/14; // a hair under full circle so it closes as it blasts
+    n--; ringDeg+=360/14;
     document.querySelector(".ring").style.background=`conic-gradient(#ff9800 ${ringDeg}deg,#1f1f1f ${ringDeg}deg 360deg)`;
     ringDot.textContent=Math.max(0,n);
 
-    // metrics
     hoops = Math.min(hoopsTarget, hoops + hoopsStep);
-    sure  = Math.min(sureTarget,  sure  + sureStep);
+    sureVal  = Math.min(sureTarget,  sureVal  + sureStep);
+    extra = Math.min(extraTarget, extra + extraStep);
+    heat  = Math.min(heatTarget,  heat  + heatStep);
+    teams = Math.min(teamsTarget, teams + teamsStep);
+
     hoopsEl.textContent = formatInt(Math.round(hoops));
-    sureEl.textContent  = (n>0 ? sure.toFixed(1) : sureTarget.toFixed(1)) + "%";
+    sureEl.textContent  = (n>0 ? sureVal.toFixed(3) : sureTarget.toFixed(3)) + "%";
+    extraEl.textContent = Math.round(extra);
+    const heatRounded = Math.round(heat);
+    heatEl.textContent = heatRounded + "%";
+    if(heatRounded >= 100){ heatEl.classList.add("hot"); }
+
+    teamsEl.textContent = Math.round(teams);
+
+    if(gateIndex < gateEls.length && n <= (12 - gateIndex*3)){
+      gateEls[gateIndex].classList.add("on");
+      gateIndex++;
+    }
+
+    if(n===5){
+      goLiveAlert.style.display="flex";
+    }
+    if(n<=1){
+      goLiveAlert.style.display="none";
+    }
 
     if(n<=3 && n>=0){ document.body.classList.add("shake"); setTimeout(()=>document.body.classList.remove("shake"), 380); }
 
     if(n<=0){
       clearInterval(countdownTimer);
-      // lock exact values
       hoopsEl.textContent = formatInt(hoopsTarget);
-      sureEl.textContent  = sureTarget.toFixed(1) + "%";
+      sureEl.textContent  = sureTarget.toFixed(3) + "%";
+      extraEl.textContent = extraTarget;
+      heatEl.textContent  = heatTarget + "%";
+      heatEl.classList.add("hot");
+      teamsEl.textContent = teamsTarget;
 
-      // one-time rainbow shimmer on hoops
       hoopsEl.classList.add("shimmer");
       hoopsEl.addEventListener("animationend", ()=>{ hoopsEl.classList.remove("shimmer"); }, {once:true});
 
@@ -214,9 +319,15 @@ function abortLaunch(){
   currentPhase="ABORTED"; setStatus("ABORTED","#ff1744");
   clearTimers();
   strobe.style.display="block"; document.body.classList.add("shake");
-  consoleEl.innerHTML="> [ABORT] Rollback engaged…<br/>> Restoring previous state…<br/>> All systems back to SAFE mode.<br/>";
+  consoleEl.innerHTML="> [ABORT] Operational go-live halted by command.<br/>> Reverting to pre-go-live state…<br/>> Customers none the wiser.<br/>";
   progressWrap.style.display="block"; setProgress(100);
-  setTimeout(()=>{ strobe.style.display="none"; document.body.classList.remove("shake"); abortBtn.style.display="none"; resetBtn.style.display="inline-block"; }, 1500);
+  goLiveAlert.style.display="none";
+  setTimeout(()=>{
+    strobe.style.display="none";
+    document.body.classList.remove("shake");
+    abortBtn.style.display="none";
+    resetBtn.style.display="inline-block";
+  },1500);
 }
 
 /* ===== DEPLOY LOGS ===== */
@@ -225,13 +336,19 @@ function startLogs(){
   consoleEl.innerHTML=""; progressWrap.style.display="block"; setProgress(0);
 
   const logs=[
-    "Connecting to production cluster…",
-    "Verifying release artifacts…",
-    "Initializing pods…",
-    "Loading secrets…",
-    "Running sanity checks…",
-    "Finalising deployment…",
-    "Deployment complete. All systems GO!"
+    "Routing traffic away from old stack…",
+    "Warming new services in production…",
+    "Syncing operational data & caches…",
+    "Confirming monitoring & alert channels…",
+    "Checking dashboards for unexpected chaos…",
+    "Finalising switch to new path…",
+    "Operational go-live complete. Customers live 🎉"
+  ];
+
+  const microIncidents=[
+    "Minor blip detected on dashboard… probably cosmetic.",
+    "Short spike in latency… calling it 'expected'.",
+    "Alert briefly flickered, then behaved itself."
   ];
 
   let i=0;
@@ -240,12 +357,18 @@ function startLogs(){
     if(i<logs.length){
       logLine("> "+logs[i]);
       setProgress(Math.floor(((i+1)/logs.length)*100));
+
+      // random micro incident for extra spice
+      if(Math.random() < 0.3 && i < logs.length-1){
+        makeToast(microIncidents[rand(0,microIncidents.length-1)]);
+      }
+
       i++;
     } else {
       clearInterval(logTimer);
       startCelebration();
     }
-  },800);
+  },850);
 }
 
 /* ===== CELEBRATION ===== */
@@ -253,14 +376,14 @@ function startCelebration(){
   currentPhase="SUCCESS"; setStatus("SUCCESS","#00e676");
   abortBtn.style.display="none"; resetBtn.style.display="inline-block";
 
-  // Confetti loop
-  const end=Date.now()+11000; (function frame(){
-    confetti({particleCount:12, angle:60, spread:55, origin:{x:0}});
-    confetti({particleCount:12, angle:120, spread:55, origin:{x:1}});
+  const end=Date.now()+11000;
+  (function frame(){
+    confetti({particleCount:14, angle:60, spread:55, origin:{x:0}});
+    confetti({particleCount:14, angle:120, spread:55, origin:{x:1}});
     if(Date.now()<end) requestAnimationFrame(frame);
   })();
 
-  emojiRain(7000);
+  emojiRain(7500);
   progressWrap.style.display="none";
   consoleEl.classList.add("rollup");
 
@@ -273,32 +396,39 @@ function startCelebration(){
     finaleEl.innerHTML=`
       <div class="finale-hero">
         <h1 class="online-badge">✅ CODE IN PRODUCTION</h1>
-        <p class="subtitle">Tech release successfully deployed.</p>
-        <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width="260" class="cat" alt="victory cat"/>
+        <p class="subtitle">Operational go-live complete. Customers are live and nothing is on fire (yet).</p>
+        <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width="260" class="cat" alt="victory cat" id="finalCat"/>
       </div>
     `;
 
-    // Achievements
     const ach=[
-      "🏅 Achievement: Deployed on First Click",
-      "🎖️ Logs Read Aloud for Performance",
-      "🏆 Rubber Duck Approved",
-      "🥳 100% Uptime (last 12 seconds)"
+      "🏅 Achievement: Operational Go-Live Survived",
+      "🎖️ No Sev1 in the first 10 minutes",
+      "🏆 Regulator still breathing normally",
+      "🥳 Hypercare channel: suspiciously quiet"
     ];
     setTimeout(()=>makeToast(ach[rand(0,ach.length-1)]),1200);
     if(Math.random()>0.5) setTimeout(()=>makeToast(ach[rand(0,ach.length-1)]),2000);
+
+    // Easter egg: click the cat for bonus party
+    const cat=document.getElementById("finalCat");
+    if(cat){
+      cat.addEventListener("click", ()=>{
+        confetti({particleCount:180,spread:90,startVelocity:55,scalar:1.1,origin:{x:0.5,y:0.2}});
+        makeToast("Secret Easter Egg: CXO carried this on sheer caffeine and vibes ☕");
+      }, {once:true});
+    }
   },950);
 }
 
 /* ===== RESET ===== */
 function resetMission(){
   confetti({particleCount:100,spread:70,startVelocity:45,scalar:.9,origin:{x:.8,y:.15}});
-  makeToast("Ready for another run ✨");
+  makeToast("Ready for another operational miracle ✨");
   clearTimers();
   strobe.style.display="none"; document.body.classList.remove("shake");
   currentPhase="IDLE"; setStatus("IDLE","#0f0");
 
-  // Reset visuals
   ringDot.textContent="13";
   document.querySelector(".ring").style.background=`conic-gradient(#1f1f1f 0deg,#1f1f1f 360deg)`;
   ringDot.classList.remove("blast");
@@ -308,13 +438,16 @@ function resetMission(){
   progressWrap.style.display="none"; setProgress(0);
   launchBtn.style.display="inline-block"; abortBtn.style.display="none"; resetBtn.style.display="none";
 
-  // Reset metrics
   hoopsEl.classList.remove("shimmer");
-  hoopsEl.textContent="876";
+  hoopsEl.textContent="8,762";
   sureEl.textContent="60%";
+  extraEl.textContent="0";
+  heatEl.textContent="47%"; heatEl.classList.remove("hot");
+  teamsEl.textContent="3";
 
-  // Reset preflight
   for(const el of pfEls) el.classList.remove("done");
+  for(const g of gateEls) g.classList.remove("on");
+  goLiveAlert.style.display="none";
 }
 </script>
 </body>

@@ -214,19 +214,19 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
 /* Toasts & emoji */
 .toast{
   position:fixed;
-  bottom:18px;
+  bottom:24px;
   left:50%;
   transform:translateX(-50%) translateY(10px);
   background:#181818;
   color:#fff;
-  border:1px solid #ff9800;
-  border-radius:12px;
-  padding:12px 18px;
-  font-size:14px;
-  box-shadow:0 10px 35px rgba(0,0,0,.7);
+  border:2px solid #ff9800;
+  border-radius:14px;
+  padding:14px 22px;
+  font-size:16px;
+  box-shadow:0 12px 40px rgba(0,0,0,.8);
   opacity:0;
   animation:toastIn .4s ease-out forwards,
-           toastOut .6s ease-in 3.2s forwards;
+           toastOut .6s ease-in 5.2s forwards;
   z-index:9999;
   max-width:90vw;
   text-align:center;
@@ -340,7 +340,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
       <div class="metric-row">Hoops jumped through: <strong id="hoopsNum">8,762</strong></div>
       <div class="metric-row">Extra requirements jammed in: <strong id="extraNum">0</strong></div>
       <div class="metric-row">System heat index: <strong id="heatVal">47%</strong></div>
-      <div class="metric-row">GDW status: <strong>holding (just)</strong></div>
+      <div class="metric-row">GDW status: <strong>functional (against all odds)</strong></div>
       <div class="metric-row">Teams on standby: <strong id="teamsNum">3</strong></div>
     </section>
 
@@ -378,10 +378,11 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
 let countdownTimer=null, logTimer=null, ringDeg=0, currentPhase="IDLE";
 const emojis=["🚀","🎉","🐱","🔥","✨","💾","🛰️","🧪","📣","🧯"];
 const achievements=[
-  "🏅 Achievement: Operational Go-Live Survived",
-  "🎖️ No Sev1 in the first 10 minutes",
-  "🏆 Regulator still breathing normally",
-  "🥳 Hypercare channel: suspiciously quiet"
+  "🏅 CRSM live and behaving (for now)",
+  "🎖️ No Sev1, only Sev0 anxiety",
+  "🏆 Regulator still thinks this was the plan",
+  "📊 Dashboards loading, data mostly cooperating",
+  "🥂 Sara may officially open the champagne"
 ];
 
 const statusText=document.getElementById("statusText"),
@@ -417,7 +418,7 @@ function makeToast(msg){
   const t=document.createElement('div');
   t.className='toast';t.textContent=msg;
   document.body.appendChild(t);
-  setTimeout(()=>t.remove(),4200);
+  setTimeout(()=>t.remove(),6200);
 }
 function runPreflight(){
   let i=0;
@@ -463,6 +464,7 @@ function initiateLaunch(){
   abortBtn.style.display="inline-block";
   resetBtn.style.display="none";
   consoleEl.innerHTML="";
+  consoleEl.style.display="block";
   finaleEl.innerHTML="";
   progressWrap.style.display="none";
   setProgress(0);
@@ -602,7 +604,7 @@ function startLogs(){
       logLine("> "+logs[i]);
       setProgress(Math.floor(((i+1)/logs.length)*100));
 
-      if(Math.random() < 0.3 && i < logs.length-1){
+      if(Math.random() < 0.35 && i < logs.length-1){
         makeToast(microIncidents[rand(0,microIncidents.length-1)]);
       }
 
@@ -630,6 +632,7 @@ function startCelebration(){
   emojiRain(7500);
   progressWrap.style.display="none";
   consoleEl.classList.add("rollup");
+  consoleEl.style.display="none";
 
   setTimeout(()=>{
     document.body.style.background="radial-gradient(circle,#000,#101010 40%,#111)";
@@ -651,8 +654,14 @@ function startCelebration(){
       </div>
     `;
 
-    setTimeout(()=>makeToast(randomAch),1200);
-    if(Math.random()>0.5) setTimeout(()=>makeToast(achievements[rand(0,achievements.length-1)]),2000);
+    const completionMsgs = [
+      "CRSM is live in production. 🎯",
+      randomAch,
+      "Hypercare watching, dashboards ready. You may now refresh aggressively."
+    ];
+    completionMsgs.forEach((m, idx)=>{
+      setTimeout(()=>makeToast(m), 1200 + idx*2800);
+    });
 
     const cat=document.getElementById("finalCat");
     if(cat){
@@ -664,7 +673,7 @@ function startCelebration(){
           scalar:1.1,
           origin:{x:0.5,y:0.2}
         });
-        makeToast("Secret Easter Egg: CXO carried this on sheer caffeine and vibes ☕");
+        makeToast("Secret Easter Egg: CRSM carried to prod on sheer caffeine and vibes ☕");
       }, {once:true});
     }
   },950);
@@ -675,7 +684,7 @@ function resetMission(){
     particleCount:100,spread:70,startVelocity:45,
     scalar:.9,origin:{x:.8,y:.15}
   });
-  makeToast("Ready for another operational miracle ✨");
+  makeToast("Reset complete. Ready for the next heroic go-live ✨");
   clearTimers();
   strobe.style.display="none";
   document.body.classList.remove("shake");
@@ -691,6 +700,7 @@ function resetMission(){
     window.innerWidth<420 ? "180px" :
     (window.innerWidth<700 ? "220px" : "280px")
   );
+  consoleEl.style.display="block";
   consoleEl.innerHTML="";
   finaleEl.innerHTML="";
   progressWrap.style.display="none";

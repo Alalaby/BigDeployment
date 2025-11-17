@@ -127,6 +127,11 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
 .metric-row{font-size:13px;margin:4px 0;}
 .metric-row strong{font-weight:bold;}
 #heatVal.hot{color:#ff5252;}
+.achievement-line{
+  font-size:14px;
+  margin-top:4px;
+  color:#ccc;
+}
 
 /* Progress */
 #progressWrap{margin-top:16px;display:none;}
@@ -251,7 +256,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
   80%{transform:translateX(4px)}
 }
 
-/* Imminent overlay – FIXED: starts hidden, no always-on flex */
+/* Imminent overlay – starts hidden, JS toggles flex/none */
 #goLiveAlert{
   display:none;
   position:fixed;
@@ -308,7 +313,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
       <div class="check" id="pf2"><div class="box"></div><div>Support channels on standby</div></div>
       <div class="check" id="pf3"><div class="box"></div><div>On-call humans caffeinated</div></div>
       <div class="check" id="pf4"><div class="box"></div><div>Rollback plan located</div></div>
-      <div class="check" id="pf5"><div class="box"></div><div>Sanity checks mostly passed (CXO questionable)</div></div>
+      <div class="check" id="pf5"><div class="box"></div><div>All critical checklists ticked (or convincingly ignored)</div></div>
     </section>
 
     <!-- Countdown -->
@@ -326,7 +331,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
       <div class="metric-row">Hoops jumped through: <strong id="hoopsNum">8,762</strong></div>
       <div class="metric-row">Extra requirements jammed in: <strong id="extraNum">0</strong></div>
       <div class="metric-row">System heat index: <strong id="heatVal">47%</strong></div>
-      <div class="metric-row">GDW status: <strong>questionable</strong></div>
+      <div class="metric-row">GDW status: <strong>holding (just)</strong></div>
       <div class="metric-row">Teams on standby: <strong id="teamsNum">3</strong></div>
     </section>
 
@@ -334,7 +339,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
     <section class="panel" id="gates">
       <h3>Go-Live Gates</h3>
       <div class="gate" id="gate1"><div class="dot"></div><div>Business sign-off</div></div>
-      <div class="gate" id="gate2"><div class="dot"></div><div>Sara's champagne ready</div></div>
+      <div class="gate" id="gate2"><div class="dot"></div><div>Sara's Champagne on ice</div></div>
       <div class="gate" id="gate3"><div class="dot"></div><div>Regulator not watching</div></div>
       <div class="gate" id="gate4"><div class="dot"></div><div>Fingers and toes crossed</div></div>
     </section>
@@ -363,6 +368,12 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
 <script>
 let countdownTimer=null, logTimer=null, ringDeg=0, currentPhase="IDLE";
 const emojis=["🚀","🎉","🐱","🔥","✨","💾","🛰️","🧪","📣","🧯"];
+const achievements=[
+  "🏅 Achievement: Operational Go-Live Survived",
+  "🎖️ No Sev1 in the first 10 minutes",
+  "🏆 Regulator still breathing normally",
+  "🥳 Hypercare channel: suspiciously quiet"
+];
 
 const statusText=document.getElementById("statusText"),
       ringDot=document.getElementById("ringDot"),
@@ -619,22 +630,20 @@ function startCelebration(){
     document.body.style.justifyContent="center";
     document.body.style.height="100vh";
 
+    const randomAch = achievements[rand(0, achievements.length-1)];
+
     finaleEl.innerHTML=`
       <div class="finale-hero">
-        <h1 class="online-badge">✅ CRSM & OPS ARE LIVE</h1>
+        <h1 class="online-badge">✅ CRSM IN PRODUCTION</h1>
         <p class="subtitle">Operational go-live complete. Customers are live and nothing is on fire (yet).</p>
-        <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width="260" class="cat" alt="victory cat" id="finalCat"/>
+        <p class="subtitle achievement-line">${randomAch}</p>
+        <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif"
+             width="260" class="cat" alt="victory cat" id="finalCat"/>
       </div>
     `;
 
-    const ach=[
-      "🏅 Achievement: Operational Go-Live Survived",
-      "🎖️ No Sev1 in the first 10 minutes",
-      "🏆 Regulator still breathing normally",
-      "🥳 Hypercare channel: suspiciously quiet"
-    ];
-    setTimeout(()=>makeToast(ach[rand(0,ach.length-1)]),1200);
-    if(Math.random()>0.5) setTimeout(()=>makeToast(ach[rand(0,ach.length-1)]),2000);
+    setTimeout(()=>makeToast(randomAch),1200);
+    if(Math.random()>0.5) setTimeout(()=>makeToast(achievements[rand(0,achievements.length-1)]),2000);
 
     const cat=document.getElementById("finalCat");
     if(cat){

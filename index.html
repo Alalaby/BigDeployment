@@ -4,7 +4,6 @@
 <meta charset="UTF-8" />
 <title>🚀 Operational Go-Live — Mission Control</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-
 <style>
 :root { --accent:#ff9800; --danger:#ff1744; --ok:#00e676; --line:#333; }
 html,body{
@@ -47,6 +46,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
   100%{box-shadow:0 0 10px #ff5722}
 }
 
+/* Layout row */
 #topRow{
   display:grid;
   grid-template-columns:230px 200px 1fr 230px;
@@ -59,6 +59,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
   #topRow{grid-template-columns:1fr;grid-template-rows:auto auto auto auto;}
 }
 
+/* Countdown ring */
 .ring{
   width:160px;height:160px;border-radius:50%;
   margin:8px auto;
@@ -86,6 +87,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
   100%{transform:scale(.6) translateY(-20px);opacity:0}
 }
 
+/* Panels */
 .panel{
   background:#0c0c0c;border:1px solid #161616;
   border-radius:10px;padding:12px;
@@ -108,6 +110,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
 }
 .check.done .label{color:#d2ffd2;}
 
+/* Go-live gates */
 .gate{
   display:flex;align-items:center;gap:8px;
   margin:6px 0;font-size:13px;opacity:.5;
@@ -120,10 +123,12 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
   background:#00e676;box-shadow:0 0 10px rgba(0,230,118,.6);
 }
 
+/* Fun metrics */
 .metric-row{font-size:13px;margin:4px 0;}
 .metric-row strong{font-weight:bold;}
 #heatVal.hot{color:#ff5252;}
 
+/* Progress */
 #progressWrap{margin-top:16px;display:none;}
 #progressShell{
   position:relative;background:#111;border:1px solid #333;
@@ -145,6 +150,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
   text-shadow:0 0 4px rgba(255,255,255,.25);
 }
 
+/* Console */
 #console{
   background:#000;color:#00e676;padding:18px;
   margin-top:10px;height:280px;overflow-y:auto;
@@ -165,6 +171,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
   }
 }
 
+/* Finale */
 .finale-hero{
   text-align:center;
   animation:popIn 600ms cubic-bezier(.2,.8,.2,1) forwards;
@@ -185,6 +192,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
   cursor:pointer;
 }
 
+/* Hoops shimmer */
 @keyframes shimmerRainbow{
   0%{background-position:-200% 0;opacity:1}
   80%{opacity:1}
@@ -198,6 +206,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
   animation:shimmerRainbow 1.5s ease forwards;
 }
 
+/* Toasts & emoji */
 .toast{
   position:fixed;top:14px;right:14px;
   background:#111;color:#fff;border:1px solid #333;
@@ -220,6 +229,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
   to{transform:translateY(110vh) rotate(360deg);opacity:.9;}
 }
 
+/* Strobe & shake */
 #strobe{
   display:none;position:fixed;inset:0;
   pointer-events:none;background:rgba(255,0,0,0.18);
@@ -230,7 +240,6 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
   50%{background:rgba(255,0,0,.26)}
   100%{background:rgba(255,0,0,.06)}
 }
-
 .shake{
   animation:shakeAnim .4s ease-in-out 6;
 }
@@ -242,14 +251,19 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
   80%{transform:translateX(4px)}
 }
 
-/* FIXED: starts hidden, no duplicate display:flex */
+/* Imminent overlay – FIXED: starts hidden, no always-on flex */
 #goLiveAlert{
   display:none;
-  position:fixed;inset:0;
+  position:fixed;
+  inset:0;
   background:rgba(0,0,0,.85);
-  color:#ff5555;font-size:24px;z-index:9990;
-  display:flex;align-items:center;justify-content:center;
-  text-align:center;flex-direction:column;
+  color:#ff5555;
+  font-size:24px;
+  z-index:9990;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  flex-direction:column;
 }
 
 @media(max-width:700px){
@@ -273,7 +287,6 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
 }
 </style>
 </head>
-
 <body>
 <header>
   <h1>🔥 OPERATIONAL GO-LIVE: THE BIG ONE 🔥</h1>
@@ -288,6 +301,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
   </div>
 
   <div id="topRow">
+    <!-- Preflight -->
     <section class="panel" id="preflight">
       <h3>Pre-flight Checklist</h3>
       <div class="check" id="pf1"><div class="box"></div><div>Runbooks updated (mostly)</div></div>
@@ -297,12 +311,14 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
       <div class="check" id="pf5"><div class="box"></div><div>Sanity checks mostly passed (CXO questionable)</div></div>
     </section>
 
+    <!-- Countdown -->
     <section class="panel" id="countdownWrap">
       <h3>T-Minus</h3>
       <div class="ring"><div class="dot" id="ringDot">13</div></div>
       <div style="font-size:12px;text-align:center;opacity:.8;">to customers seeing this for real</div>
     </section>
 
+    <!-- Fun metrics -->
     <section class="panel" id="funFacts">
       <h3>Operational Metrics</h3>
       <div class="metric-row">Latency: <strong>provably fine</strong></div>
@@ -314,6 +330,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
       <div class="metric-row">Teams on standby: <strong id="teamsNum">3</strong></div>
     </section>
 
+    <!-- Go-live gates -->
     <section class="panel" id="gates">
       <h3>Go-Live Gates</h3>
       <div class="gate" id="gate1"><div class="dot"></div><div>Business sign-off</div></div>
@@ -325,7 +342,10 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
 
   <div id="progressWrap">
     <div style="font-size:12px;opacity:.8;margin-bottom:6px;">Operational Deployment Progress</div>
-    <div id="progressShell"><div id="progressBar"></div><div id="progressPct">0%</div></div>
+    <div id="progressShell">
+      <div id="progressBar"></div>
+      <div id="progressPct">0%</div>
+    </div>
   </div>
 
   <div id="console"></div>
@@ -340,12 +360,339 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
 <script>
-/* ——— JS LOGIC UNCHANGED FROM LAST VERSION ——— */
-/* (Cut for length here to avoid hitting message limits again)
-   If you need the JS block too, I’ll send that next message. */
-</script>
+let countdownTimer=null, logTimer=null, ringDeg=0, currentPhase="IDLE";
+const emojis=["🚀","🎉","🐱","🔥","✨","💾","🛰️","🧪","📣","🧯"];
 
+const statusText=document.getElementById("statusText"),
+      ringDot=document.getElementById("ringDot"),
+      consoleEl=document.getElementById("console"),
+      progressWrap=document.getElementById("progressWrap"),
+      progressBar=document.getElementById("progressBar"),
+      progressPct=document.getElementById("progressPct"),
+      finaleEl=document.getElementById("finale"),
+      launchBtn=document.getElementById("launchBtn"),
+      abortBtn=document.getElementById("abortBtn"),
+      resetBtn=document.getElementById("resetBtn"),
+      strobe=document.getElementById("strobe"),
+      hoopsEl=document.getElementById("hoopsNum"),
+      sureEl=document.getElementById("sureNum"),
+      extraEl=document.getElementById("extraNum"),
+      heatEl=document.getElementById("heatVal"),
+      teamsEl=document.getElementById("teamsNum"),
+      pfEls=[...Array(5)].map((_,i)=>document.getElementById("pf"+(i+1))),
+      gateEls=[1,2,3,4].map(i=>document.getElementById("gate"+i)),
+      goLiveAlert=document.getElementById("goLiveAlert");
+
+function setStatus(t,c){statusText.textContent=t;statusText.style.color=c||"#0f0";}
+function logLine(t){consoleEl.innerHTML+=t+"<br/>";consoleEl.scrollTop=consoleEl.scrollHeight;}
+function setProgress(p){progressBar.style.width=p+"%";progressPct.textContent=p+"%";}
+function clearTimers(){
+  if(countdownTimer) clearInterval(countdownTimer);
+  if(logTimer) clearInterval(logTimer);
+}
+function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function formatInt(n){return n.toLocaleString();}
+function makeToast(msg){
+  const t=document.createElement('div');
+  t.className='toast';t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2600);
+}
+function runPreflight(){
+  let i=0;
+  const tick=setInterval(()=>{
+    if(i<pfEls.length){pfEls[i].classList.add("done");i++;}
+    else clearInterval(tick);
+  },260);
+}
+function emojiRain(dur=7000){
+  const end=Date.now()+dur;
+  const drop=()=>{
+    const e=document.createElement("div");
+    e.className="emoji";
+    e.textContent=emojis[rand(0,emojis.length-1)];
+    e.style.left=Math.random()*100+"vw";
+    e.style.animationDuration=(4000+rand(-800,800))+"ms";
+    document.body.appendChild(e);
+    setTimeout(()=>e.remove(),5200);
+  };
+  (function loop(){
+    for(let i=0;i<rand(2,4);i++)drop();
+    if(Date.now()<end)requestAnimationFrame(loop);
+  })();
+}
+
+function initiateLaunch(){
+  if(currentPhase!=="IDLE") return;
+
+  const sure = confirm("This is the OPERATIONAL go-live. Customers, call centres and dashboards will all believe this is real.\n\nAre you REALLY sure?");
+  if(!sure){
+    makeToast("Operational go-live cancelled by human sanity ✅");
+    return;
+  }
+  const sure2 = confirm("For real? This is it.");
+  if(!sure2){
+    makeToast("Operational go-live successfully avoided at the last second.");
+    return;
+  }
+
+  currentPhase="COUNTDOWN";
+  setStatus("COUNTDOWN","#ff9800");
+  launchBtn.style.display="none";
+  abortBtn.style.display="inline-block";
+  resetBtn.style.display="none";
+  consoleEl.innerHTML="";
+  finaleEl.innerHTML="";
+  progressWrap.style.display="none";
+  setProgress(0);
+  goLiveAlert.style.display="none";
+
+  runPreflight();
+
+  let hoops=8762, hoopsTarget=10000;
+  let sureVal=60, sureTarget=99.972;
+  let extra=0, extraTarget=47;
+  let heat=47, heatTarget=108;
+  let teams=3, teamsTarget=5;
+  let n=13; ringDeg=0;
+  const ticks=n;
+
+  hoopsEl.textContent=formatInt(hoops);
+  sureEl.textContent=sureVal.toFixed(0)+"%";
+  extraEl.textContent=extra;
+  heatEl.textContent=heat+"%";
+  teamsEl.textContent=teams;
+  ringDot.textContent=n;
+
+  const hoopsStep=(hoopsTarget-hoops)/ticks;
+  const sureStep=(sureTarget-sureVal)/ticks;
+  const extraStep=(extraTarget-extra)/ticks;
+  const heatStep=(heatTarget-heat)/ticks;
+  const teamsStep=(teamsTarget-teams)/ticks;
+
+  let gateIndex=0;
+
+  countdownTimer=setInterval(()=>{
+    n--; ringDeg+=360/14;
+    document.querySelector(".ring").style.background=
+      `conic-gradient(#ff9800 ${ringDeg}deg,#1f1f1f ${ringDeg}deg 360deg)`;
+    ringDot.textContent=Math.max(0,n);
+
+    hoops = Math.min(hoopsTarget, hoops + hoopsStep);
+    sureVal  = Math.min(sureTarget,  sureVal  + sureStep);
+    extra = Math.min(extraTarget, extra + extraStep);
+    heat  = Math.min(heatTarget,  heat  + heatStep);
+    teams = Math.min(teamsTarget, teams + teamsStep);
+
+    hoopsEl.textContent = formatInt(Math.round(hoops));
+    sureEl.textContent  = (n>0 ? sureVal.toFixed(3) : sureTarget.toFixed(3)) + "%";
+    extraEl.textContent = Math.round(extra);
+    const heatRounded = Math.round(heat);
+    heatEl.textContent = heatRounded + "%";
+    if(heatRounded >= 100){ heatEl.classList.add("hot"); }
+    teamsEl.textContent = Math.round(teams);
+
+    if(gateIndex < gateEls.length && n <= (12 - gateIndex*3)){
+      gateEls[gateIndex].classList.add("on");
+      gateIndex++;
+    }
+
+    if(n===5){
+      goLiveAlert.style.display="flex";
+    }
+    if(n<=1){
+      goLiveAlert.style.display="none";
+    }
+
+    if(n<=3 && n>=0){
+      document.body.classList.add("shake");
+      setTimeout(()=>document.body.classList.remove("shake"), 380);
+    }
+
+    if(n<=0){
+      clearInterval(countdownTimer);
+      hoopsEl.textContent = formatInt(hoopsTarget);
+      sureEl.textContent  = sureTarget.toFixed(3) + "%";
+      extraEl.textContent = extraTarget;
+      heatEl.textContent  = heatTarget + "%";
+      heatEl.classList.add("hot");
+      teamsEl.textContent = teamsTarget;
+
+      hoopsEl.classList.add("shimmer");
+      hoopsEl.addEventListener("animationend", ()=>{
+        hoopsEl.classList.remove("shimmer");
+      }, {once:true});
+
+      ringDot.classList.add("blast");
+      startLogs();
+    }
+  },1000);
+}
+
+function abortLaunch(){
+  if(currentPhase!=="COUNTDOWN" && currentPhase!=="DEPLOYING") return;
+  currentPhase="ABORTED";
+  setStatus("ABORTED","#ff1744");
+  clearTimers();
+  strobe.style.display="block";
+  document.body.classList.add("shake");
+  consoleEl.innerHTML=
+    "> [ABORT] Operational go-live halted by command.<br/>" +
+    "> Reverting to pre-go-live state…<br/>" +
+    "> Customers none the wiser.<br/>";
+  progressWrap.style.display="block";
+  setProgress(100);
+  goLiveAlert.style.display="none";
+  setTimeout(()=>{
+    strobe.style.display="none";
+    document.body.classList.remove("shake");
+    abortBtn.style.display="none";
+    resetBtn.style.display="inline-block";
+  },1500);
+}
+
+function startLogs(){
+  currentPhase="DEPLOYING";
+  setStatus("DEPLOYING","#00e5ff");
+  consoleEl.innerHTML="";
+  progressWrap.style.display="block";
+  setProgress(0);
+
+  const logs=[
+    "Routing traffic away from old stack…",
+    "Warming new services in production…",
+    "Syncing operational data & caches…",
+    "Confirming monitoring & alert channels…",
+    "Checking dashboards for unexpected chaos…",
+    "Finalising switch to new path…",
+    "Operational go-live complete. Customers live 🎉"
+  ];
+
+  const microIncidents=[
+    "Minor blip detected on dashboard… probably cosmetic.",
+    "Short spike in latency… calling it 'expected'.",
+    "Alert briefly flickered, then behaved itself."
+  ];
+
+  let i=0;
+  logTimer=setInterval(()=>{
+    if(currentPhase==="ABORTED"){ clearInterval(logTimer); return; }
+    if(i<logs.length){
+      logLine("> "+logs[i]);
+      setProgress(Math.floor(((i+1)/logs.length)*100));
+
+      if(Math.random() < 0.3 && i < logs.length-1){
+        makeToast(microIncidents[rand(0,microIncidents.length-1)]);
+      }
+
+      i++;
+    } else {
+      clearInterval(logTimer);
+      startCelebration();
+    }
+  },850);
+}
+
+function startCelebration(){
+  currentPhase="SUCCESS";
+  setStatus("SUCCESS","#00e676");
+  abortBtn.style.display="none";
+  resetBtn.style.display="inline-block";
+
+  const end=Date.now()+11000;
+  (function frame(){
+    confetti({particleCount:14, angle:60, spread:55, origin:{x:0}});
+    confetti({particleCount:14, angle:120, spread:55, origin:{x:1}});
+    if(Date.now()<end) requestAnimationFrame(frame);
+  })();
+
+  emojiRain(7500);
+  progressWrap.style.display="none";
+  consoleEl.classList.add("rollup");
+
+  setTimeout(()=>{
+    document.body.style.background="radial-gradient(circle,#000,#101010 40%,#111)";
+    document.body.style.display="flex";
+    document.body.style.flexDirection="column";
+    document.body.style.alignItems="center";
+    document.body.style.justifyContent="center";
+    document.body.style.height="100vh";
+
+    finaleEl.innerHTML=`
+      <div class="finale-hero">
+        <h1 class="online-badge">✅ CODE IN PRODUCTION</h1>
+        <p class="subtitle">Operational go-live complete. Customers are live and nothing is on fire (yet).</p>
+        <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width="260" class="cat" alt="victory cat" id="finalCat"/>
+      </div>
+    `;
+
+    const ach=[
+      "🏅 Achievement: Operational Go-Live Survived",
+      "🎖️ No Sev1 in the first 10 minutes",
+      "🏆 Regulator still breathing normally",
+      "🥳 Hypercare channel: suspiciously quiet"
+    ];
+    setTimeout(()=>makeToast(ach[rand(0,ach.length-1)]),1200);
+    if(Math.random()>0.5) setTimeout(()=>makeToast(ach[rand(0,ach.length-1)]),2000);
+
+    const cat=document.getElementById("finalCat");
+    if(cat){
+      cat.addEventListener("click", ()=>{
+        confetti({
+          particleCount:180,
+          spread:90,
+          startVelocity:55,
+          scalar:1.1,
+          origin:{x:0.5,y:0.2}
+        });
+        makeToast("Secret Easter Egg: CXO carried this on sheer caffeine and vibes ☕");
+      }, {once:true});
+    }
+  },950);
+}
+
+function resetMission(){
+  confetti({
+    particleCount:100,spread:70,startVelocity:45,
+    scalar:.9,origin:{x:.8,y:.15}
+  });
+  makeToast("Ready for another operational miracle ✨");
+  clearTimers();
+  strobe.style.display="none";
+  document.body.classList.remove("shake");
+  currentPhase="IDLE";
+  setStatus("IDLE","#0f0");
+
+  ringDot.textContent="13";
+  document.querySelector(".ring").style.background=
+    `conic-gradient(#1f1f1f 0deg,#1f1f1f 360deg)`;
+  ringDot.classList.remove("blast");
+  consoleEl.classList.remove("rollup");
+  consoleEl.style.height = (
+    window.innerWidth<420 ? "180px" :
+    (window.innerWidth<700 ? "220px" : "280px")
+  );
+  consoleEl.innerHTML="";
+  finaleEl.innerHTML="";
+  progressWrap.style.display="none";
+  setProgress(0);
+  launchBtn.style.display="inline-block";
+  abortBtn.style.display="none";
+  resetBtn.style.display="none";
+
+  hoopsEl.classList.remove("shimmer");
+  hoopsEl.textContent="8,762";
+  sureEl.textContent="60%";
+  extraEl.textContent="0";
+  heatEl.textContent="47%";
+  heatEl.classList.remove("hot");
+  teamsEl.textContent="3";
+
+  pfEls.forEach(el=>el.classList.remove("done"));
+  gateEls.forEach(g=>g.classList.remove("on"));
+  goLiveAlert.style.display="none";
+}
+</script>
 </body>
 </html>

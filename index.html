@@ -213,17 +213,26 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
 
 /* Toasts & emoji */
 .toast{
-  position:fixed;top:14px;right:14px;
-  background:#111;color:#fff;border:1px solid #333;
-  border-radius:10px;padding:10px 14px;
-  font-size:13px;box-shadow:0 8px 30px rgba(0,0,0,.4);
-  opacity:0;transform:translateY(-8px);
-  animation:toastIn .45s ease-out forwards,
-           toastOut .6s ease-in 2.4s forwards;
+  position:fixed;
+  bottom:18px;
+  left:50%;
+  transform:translateX(-50%) translateY(10px);
+  background:#181818;
+  color:#fff;
+  border:1px solid #ff9800;
+  border-radius:12px;
+  padding:12px 18px;
+  font-size:14px;
+  box-shadow:0 10px 35px rgba(0,0,0,.7);
+  opacity:0;
+  animation:toastIn .4s ease-out forwards,
+           toastOut .6s ease-in 3.2s forwards;
   z-index:9999;
+  max-width:90vw;
+  text-align:center;
 }
-@keyframes toastIn{to{opacity:1;transform:translateY(0)}}
-@keyframes toastOut{to{opacity:0;transform:translateY(-8px)}}
+@keyframes toastIn{to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes toastOut{to{opacity:0;transform:translateX(-50%) translateY(10px)}}
 
 .emoji{
   position:fixed;top:-40px;font-size:28px;
@@ -331,7 +340,7 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
       <div class="metric-row">Hoops jumped through: <strong id="hoopsNum">8,762</strong></div>
       <div class="metric-row">Extra requirements jammed in: <strong id="extraNum">0</strong></div>
       <div class="metric-row">System heat index: <strong id="heatVal">47%</strong></div>
-      <div class="metric-row">GDW status: <strong>holding (just)</strong></div>
+      <div class="metric-row">CXO resilience status: <strong>holding (just)</strong></div>
       <div class="metric-row">Teams on standby: <strong id="teamsNum">3</strong></div>
     </section>
 
@@ -339,8 +348,8 @@ main{max-width:1100px;margin:0 auto;padding:16px;}
     <section class="panel" id="gates">
       <h3>Go-Live Gates</h3>
       <div class="gate" id="gate1"><div class="dot"></div><div>Business sign-off</div></div>
-      <div class="gate" id="gate2"><div class="dot"></div><div>Sara's Champagne on ice</div></div>
-      <div class="gate" id="gate3"><div class="dot"></div><div>Regulator not watching</div></div>
+      <div class="gate" id="gate2"><div class="dot"></div><div>Sara's champagne on ice</div></div>
+      <div class="gate" id="gate3"><div class="dot"></div><div>Regulatory not watching</div></div>
       <div class="gate" id="gate4"><div class="dot"></div><div>Fingers and toes crossed</div></div>
     </section>
   </div>
@@ -408,7 +417,7 @@ function makeToast(msg){
   const t=document.createElement('div');
   t.className='toast';t.textContent=msg;
   document.body.appendChild(t);
-  setTimeout(()=>t.remove(),2600);
+  setTimeout(()=>t.remove(),4200);
 }
 function runPreflight(){
   let i=0;
@@ -634,7 +643,7 @@ function startCelebration(){
 
     finaleEl.innerHTML=`
       <div class="finale-hero">
-        <h1 class="online-badge">✅ CRSM IN PRODUCTION</h1>
+        <h1 class="online-badge">✅ CRSM IS LIVE</h1>
         <p class="subtitle">Operational go-live complete. Customers are live and nothing is on fire (yet).</p>
         <p class="subtitle achievement-line">${randomAch}</p>
         <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif"
